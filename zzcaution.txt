@@ -1,0 +1,46 @@
+------thunderclient not allowed to make requests
+
+To resolve this issue, you have a few options:
+
+Authenticate ThunderClient:
+
+Get an authentication token from your Clerk-authenticated session.
+Add this token to your ThunderClient requests in the Authorization header.
+
+
+--------- 3. Make the /api/products route public:
+Modify your isPublicRoute to include the products API:
+javascriptCopyconst isPublicRoute = createRouteMatcher([
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/products(.*)"
+]);
+However, be cautious with this approach as it would make your products API publicly accessible.
+Use Clerk's API for testing:
+Instead of ThunderClient, you could use Clerk's API testing tools which can handle authentication automatically.
+
+
+
+
+----- 4. Conditional Authentication:
+You could modify your middleware to only require authentication for certain operations:
+javascriptCopyexport default clerkMiddleware((auth, request) => {
+  if (!isPublicRoute(request)) {
+    // Allow GET requests to /api/products without authentication
+    if (request.method === "GET" && request.url.includes("/api/products")) {
+      return;
+    }
+    auth().protect();
+  }
+});
+This would allow unauthenticated GET requests but still protect POST, PUT, DELETE, etc.
+
+
+--- 5. Environment-based Authentication:
+You could disable authentication in development:
+javascriptCopyexport default clerkMiddleware((auth, request) => {
+  if (process.env.NODE_ENV === "production" && !isPublicRoute(request)) {
+    auth().protect();
+  }
+});
+This would allow all requests in development but protect routes in production.

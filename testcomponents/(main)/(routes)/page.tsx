@@ -1,5 +1,7 @@
 import UserHeading from "@/app/(auth)/(components)/UserHeading"
+import GoToAddProductScreenButton from "@/components/GoToAddProductScreenButton"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Button } from "@/components/ui/button"
 import { auth, currentUser } from "@clerk/nextjs/server"
 
 export default async function Home() {
@@ -20,8 +22,7 @@ export default async function Home() {
     <div>
       <UserHeading />
       <div>
-        Hello,
-        {user.fullName} your current active session is {}
+        <GoToAddProductScreenButton />
       </div>
       <div>
         <ModeToggle />
